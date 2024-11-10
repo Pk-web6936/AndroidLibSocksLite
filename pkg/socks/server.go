@@ -14,6 +14,10 @@ import (
 
 const CoreVersion = "1.0.0"
 
+func CheckCoreVersion() string {
+return CoreVersion 
+}
+
 type User struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
