@@ -38,24 +38,17 @@ jobs:
           ndk-version: 'r26b'
           link-to-sdk: true
 
-      - name: Install Go Mobile and Initialize
+      - name: Setup Go Mobile
         run: |
           go install golang.org/x/mobile/cmd/gomobile@latest
-          go install golang.org/x/mobile/cmd/gobind@latest
           export PATH=$PATH:~/go/bin
           gomobile init
-
-      - name: Prepare Go Modules
-        run: |
-          go get
-          go mod tidy -v
-          go get golang.org/x/mobile/bind
 
       - name: Build AAR
         run: |
           gomobile bind -v -androidapi 21 -ldflags='-s -w' -o libSocksLite.aar ./pkg/socks
 
-      - name: Create Release and Upload AAR
+      - name: Upload AAR to Release
         uses: svenstaro/upload-release-action@v2
         with:
           file: libSocksLite.aar
