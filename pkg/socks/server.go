@@ -14,8 +14,6 @@ import (
 
 const CoreVersion = "1.0.0"
 
-package socks
-
 func CheckCoreVersion() string {
 return CoreVersion 
 }
