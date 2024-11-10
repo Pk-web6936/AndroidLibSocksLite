@@ -41,6 +41,10 @@ To integrate this library into an Android application, first build it as an AAR 
 
 AndroidLibSocksLite offers the following core functions for managing SOCKS5 servers and monitoring their statuses:
 
+## CheckCoreVersion
+
+The `CheckCoreVersion` function returns the current core version of the library. It can be used to verify which version of the core is being utilized in your application.
+
 ### `StartSocksServers(host: String, jsonData: String): Error`
 
 - **Purpose**: Initializes and launches multiple SOCKS5 servers based on JSON input data. The servers, along with an HTTP server for monitoring, are bound to the specified `host` address.
