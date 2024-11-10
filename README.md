@@ -8,10 +8,15 @@
 - **Comprehensive Logging and Metrics**: Capture detailed access logs and gather essential metrics for real-time monitoring.
 - **Integrated HTTP APIs**: Expose API endpoints to monitor server status, client activity, and connection logs with ease.
 
+## Build requirements
+* JDK
+* Android SDK , NDK
+* Go
+* gomobile
+
 ## Building the AAR
 
-To integrate this library into an Android application, first build it as an AAR file. Follow these steps to set up and build the AAR:
-
+To integrate this library into an Android application, first build it as an AAR file. Follow these steps to set up and build the AAR: 
 1. **Install Go Mobile Tools**
    ```bash
    go install golang.org/x/mobile/cmd/gomobile@latest
@@ -23,11 +28,12 @@ To integrate this library into an Android application, first build it as an AAR 
    go get
    gomobile init
    go mod tidy -v
+   go get golang.org/x/mobile/bind
    ```
 
 3. **Build the AAR**
    ```bash
-   gomobile bind -v -androidapi 21 -ldflags='-s -w' ./
+   gomobile bind -v -androidapi 21 -ldflags='-s -w' -o libSocksLite.aar ./pkg/socks
    ```
    This command will generate an AAR package that can be seamlessly integrated into your Android project.
 
@@ -67,35 +73,10 @@ AndroidLibSocksLite also provides HTTP API endpoints to facilitate server monito
   ]
   ```
 
-### `/getMetrics`
+### `/shutdown`
 - **Method**: `GET`
-- **Description**: Provides essential metrics such as total users, active users, and total servers.
-- **Response Example**:
-  ```json
-  {
-    "total_users": 5,
-    "active_users": 3,
-    "total_servers": 5
-  }
-  ```
-
-### `/getProxyLogs`
-- **Method**: `GET`
-- **Description**: Retrieves the proxy connection logs, with an optional filter for specific usernames.
-- **Query Parameters**:
-    - `username` (optional): Filter logs by a specific username.
-- **Response Example**:
-  ```json
-  [
-    {
-      "username": "user1",
-      "url": "example.com",
-      "timestamp": "2023-03-21T15:35:12Z"
-    },
-    ...
-  ]
-  ```
-
+- **Description**: Shuts down all active SOCKS5 servers gracefully and terminates the HTTP server.
+- **Response**: Plain text message indicating successful shutdown.
 
 ## Required Android Permissions
 
@@ -107,7 +88,6 @@ Add the following permissions to your Android `AndroidManifest.xml` to allow net
 ```
 
 ## Android Integration Example
-
 
 Below are examples of using AndroidLibSocksLite in an Android app, with Kotlin and Java code that utilizes Google Gson for JSON parsing.
 
@@ -128,7 +108,6 @@ In your main activity:
 ```kotlin
 import AndroidLibSocksLite.AndroidLibSocksLite
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 
 class MainActivity : AppCompatActivity() {
 
@@ -215,22 +194,22 @@ For development or testing on a Windows machine, you can run a `main.go` file lo
 package main
 
 import (
-    "AndroidLibSocksLite"
-    "fmt"
+	"AndroidLibSocksLite"
+	"fmt"
 )
 
 func main() {
-    jsonData := `[
+	jsonData := `[
         {"username": "user1", "password": "pass1", "port": 8000},
         {"username": "user2", "password": "pass2", "port": 8001}
     ]`
 
-    err := AndroidLibSocksLite.StartSocksServers("127.0.0.1", jsonData)
-    if err != nil {
-        fmt.Printf("Error starting servers: %v\n", err)
-    } else {
-        fmt.Println("Servers started successfully on localhost")
-    }
+	err := AndroidLibSocksLite.StartSocksServers("127.0.0.1", jsonData)
+	if err != nil {
+		fmt.Printf("Error starting servers: %v\n", err)
+	} else {
+		fmt.Println("Servers started successfully on localhost")
+	}
 }
 ```
 
