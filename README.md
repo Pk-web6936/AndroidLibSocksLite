@@ -14,7 +14,7 @@
 * Go
 * gomobile
 
-## Building the AAR
+## Building the AAR (Android Archive)
 
 To integrate this library into an Android application, first build it as an AAR file. Follow these steps to set up and build the AAR: 
 1. **Install Go Mobile Tools**
