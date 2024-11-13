@@ -208,7 +208,7 @@ func main() {
         {"username": "user2", "password": "pass2", "port": 8001}
     ]`
 
-	err := AndroidLibSocksLite.StartSocksServers("127.0.0.1", jsonData)
+	err := AndroidLibSocksLite.StartSocksServers("your_host", jsonData)
 	if err != nil {
 		fmt.Printf("Error starting servers: %v\n", err)
 	} else {
@@ -224,7 +224,7 @@ To run this on Windows:
    go run main.go
    ```
 
-This will start the SOCKS5 and HTTP servers locally, allowing you to test the APIs at `http://127.0.0.1:8080/getClientStatus` using a browser or HTTP client.
+This will start the SOCKS5 and HTTP servers locally, allowing you to test the APIs at `http://host:8080/getClientStatus` using a browser or HTTP client.
 
 ---
 
