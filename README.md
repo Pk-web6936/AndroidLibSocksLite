@@ -224,7 +224,7 @@ To run this on Windows:
    go run main.go
    ```
 
-This will start the SOCKS5 and HTTP servers locally, allowing you to test the APIs at `http://host:8080/getClientStatus` using a browser or HTTP client.
+This will start the SOCKS5 and HTTP servers locally, allowing you to test the APIs at `http://your_host:8080/getClientStatus` using a browser or HTTP client.
 
 ---
 
