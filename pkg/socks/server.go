@@ -12,10 +12,10 @@ import (
 	"syscall"
 )
 
-const CoreVersion = "1.0.0"
+const coreVersion = "1.0.1"
 
 func CheckCoreVersion() string {
-return CoreVersion 
+	return coreVersion
 }
 
 type User struct {
