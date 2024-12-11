@@ -48,7 +48,7 @@ jobs:
           go mod tidy
           cd pkg/socks
           go get golang.org/x/mobile/bind
-          gomobile bind -v -androidapi 21 -ldflags='-s -w' -o libsocks ./
+          gomobile bind -v -androidapi 21 -ldflags='-s -w' -o libsocks.aar ./
       - name: Upload AndroidLibSocksLite to release
         uses: svenstaro/upload-release-action@v2
         with:
