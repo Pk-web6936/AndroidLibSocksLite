@@ -52,6 +52,6 @@ jobs:
       - name: Upload AndroidLibSocksLite to release
         uses: svenstaro/upload-release-action@v2
         with:
-          file: ./libsocks*r
+          file: libsocks*r
           tag: ${{ github.event.inputs.release_tag }}
           file_glob: true
