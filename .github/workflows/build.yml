@@ -46,6 +46,7 @@ jobs:
         run: |
           gomobile init
           go mod tidy
+          cd pkg/socks
           gomobile bind -v -androidapi 21 -ldflags='-s -w' ./
       - name: Upload AndroidLibSocksLite to release
         uses: svenstaro/upload-release-action@v2
