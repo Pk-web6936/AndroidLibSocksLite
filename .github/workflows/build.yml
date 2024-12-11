@@ -44,7 +44,6 @@ jobs:
 
       - name: Build
         run: |
-         go get
          gomobile init
          go mod tidy -v
          go get golang.org/x/mobile/bind
