@@ -44,9 +44,11 @@ jobs:
 
       - name: Build
         run: |
-          gomobile init
-          go mod tidy
-          gomobile bind -v -androidapi 21 -ldflags='-s -w' ./
+         go get
+         gomobile init
+         go mod tidy -v
+         go get golang.org/x/mobile/bind
+         gomobile bind -v -androidapi 21 -ldflags='-s -w' ./
       - name: Upload AndroidLibSocksLite to release
         uses: svenstaro/upload-release-action@v2
         with:
