@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/armon/go-socks5"
-	"github.com/sirupsen/logrus"
 	"net"
 	"os"
 	"os/signal"
