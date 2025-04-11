@@ -7,6 +7,12 @@ on:
         required: true
         type: string
         description : 'Release tag'
+  pull_request:
+    branches:
+      - bulid
+  push:
+    branches:
+      - bulid
 jobs:
   build:
     runs-on: ubuntu-latest
