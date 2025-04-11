@@ -19,11 +19,6 @@ jobs:
       with:
         go-version: 'stable'
 
-    - name: Set up Git
-      run: |
-        git config --global user.name "github-actions[bot]"
-        git config --global user.email "github-actions[bot]@users.noreply.github.com"
-
     - name: Update and commit changes
       if: env.needs_update == 'true'
       run: |
