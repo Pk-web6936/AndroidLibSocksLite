@@ -28,7 +28,7 @@ jobs:
       run: |
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
-        git checkout main # Ensure you are starting from the base branch
+        git checkout master # Replace 'main' with your default branch name
         git checkout -b dependency-update
         git add go.mod go.sum
         git commit -m "chore: update dependencies"
