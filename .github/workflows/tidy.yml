@@ -42,15 +42,16 @@ jobs:
         fi
 
     - name: Commit and push changes
-      if: env.needs_commit == 'true'
-      run: |
-        git checkout -B dependency-update
-        git add go.mod go.sum
-        git commit -m "chore: update dependencies"
-        git push origin master --force
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
+      if: env.needs_update == 'true'
+      uses: stefanzweifel/git-auto-commit-action@v5.1.0
+      with:
+        commit_message: "chore: update dependencies"
+        file_pattern: |
+          go.mod
+          go.sum
+        branch: master # شاخه‌ای که تغییرات به آن push می‌شود
+        commit_author: "github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
+         
     - name: Trigger build
       if: env.needs_update == 'true' && steps.auto-commit-action.outputs.changes_detected == 'true'
       run: |
