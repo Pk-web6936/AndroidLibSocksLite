@@ -1,0 +1,45 @@
+name: Auto Dependency Update
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # اجرای روزانه در ساعت 12:00 شب UTC
+  workflow_dispatch: # امکان اجرای دستی Workflow
+
+jobs:
+  dependency-update:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4.2.2
+
+    - name: Set up Go
+      uses: actions/setup-go@v5.4.0
+      with:
+        go-version: 'stable' # نسخه Go مورد نظر خود را تنظیم کنید
+
+    - name: Update dependencies
+      run: |
+        go get -u ./...
+        go mod tidy
+        git diff
+
+    - name: Commit and push changes
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git checkout -b dependency-update
+        git add go.mod go.sum
+        git commit -m "chore: update dependencies"
+        git push origin dependency-update
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v5
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        branch: dependency-update
+        title: "chore: update dependencies"
+        body: |
+          This PR updates project dependencies automatically.
