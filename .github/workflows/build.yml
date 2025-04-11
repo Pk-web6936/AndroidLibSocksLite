@@ -9,10 +9,10 @@ on:
         description : 'Release tag'
   pull_request:
     branches:
-      - bulid
+      - master
   push:
     branches:
-      - bulid
+      - master
 jobs:
   build:
     runs-on: ubuntu-latest
