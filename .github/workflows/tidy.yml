@@ -13,6 +13,12 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4.2.2
 
+    - name: Setup Golang
+      if: env.needs_update == 'true'
+      uses: actions/setup-go@v5.4.0
+      with:
+        go-version: 'stable'
+
     - name: Set up Git
       run: |
         git config --global user.name "github-actions[bot]"
@@ -23,12 +29,6 @@ jobs:
         go get -u ./...
         go mod tidy
         git diff
-
-    - name: Setup Golang
-      if: env.needs_update == 'true'
-      uses: actions/setup-go@v5.4.0
-      with:
-        go-version: 'stable'
          
     - name: Commit changes
       run: |
