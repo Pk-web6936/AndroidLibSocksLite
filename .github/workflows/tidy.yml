@@ -30,13 +30,14 @@ jobs:
         git diff
 
     - name: Commit and push changes
+      id: auto-commit-action
       uses: stefanzweifel/git-auto-commit-action@v5.1.0
       with:
         commit_message: "chore: update dependencies"
         file_pattern: |
           go.mod
           go.sum
-        branch: master # شاخه‌ای که تغییرات به آن push می‌شود
+        branch: master 
         commit_author: "github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
          
     - name: Trigger build
