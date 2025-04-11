@@ -28,14 +28,14 @@ jobs:
       run: |
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
-        git checkout master # Replace 'main' with your default branch name
+        git checkout master # Replace 'master' with your default branch name
         git checkout -b dependency-update
         git add go.mod go.sum
-        git commit -m "chore: update dependencies"
-        git push origin dependency-update
+        git commit -m "chore: update dependencies" || echo "No changes to commit"
+        git push origin dependency-update --force # Force-push to ensure the branch updates
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
+        
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@v5
       with:
