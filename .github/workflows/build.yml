@@ -60,6 +60,7 @@ jobs:
           go get golang.org/x/mobile/bind
           gomobile bind -v -androidapi 21 -ldflags='-s -w' -o libsocks.aar ./
       - name: Upload AndroidLibSocksLite to release
+        if: github.event.inputs.release_tag != ''
         uses: svenstaro/upload-release-action@v2
         with:
           file: pkg/socks/libsocks*r
