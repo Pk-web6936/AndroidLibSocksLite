@@ -22,7 +22,6 @@ jobs:
       run: |
         go get -u ./...
         go mod tidy
-        git diff
 
     - name: Commit changes
       run: |
@@ -41,8 +40,10 @@ jobs:
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         branch: dependency-update
+        base: master # Replace 'master' with your default branch if different
         title: "chore: update dependencies"
         body: |
           This PR updates project dependencies automatically.
         labels: |
           dependencies
+        delete-branch: false
