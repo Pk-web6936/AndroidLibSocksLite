@@ -29,7 +29,18 @@ jobs:
         go get -u ./...
         go mod tidy
         git diff
-         
+    - name: Stash changes (if needed)
+      run: |
+        git stash || echo "No changes to stash"
+
+    - name: Checkout or create branch
+      run: |
+        git checkout -B dependency-update
+
+    - name: Apply stashed changes (if needed)
+      run: |
+        git stash pop || echo "No stashed changes to apply"  
+        
     - name: Commit and push changes
       uses: stefanzweifel/git-auto-commit-action@v5.1.0
       with:
