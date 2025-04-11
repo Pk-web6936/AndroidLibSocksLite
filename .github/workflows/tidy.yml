@@ -24,6 +24,12 @@ jobs:
         go mod tidy
         git diff
 
+    - name: Setup Golang
+      if: env.needs_update == 'true'
+      uses: actions/setup-go@v5.4.0
+      with:
+        go-version: 'stable'
+         
     - name: Commit changes
       run: |
         git checkout -b dependency-update || git checkout dependency-update
