@@ -29,17 +29,6 @@ jobs:
         go get -u ./...
         go mod tidy
         git diff
-        
-    - name: Check for changes
-      id: check_changes
-      run: |
-        if git diff --quiet; then
-          echo "No changes to commit"
-          echo "needs_commit=false" >> $GITHUB_ENV
-        else
-          echo "Changes detected"
-          echo "needs_commit=true" >> $GITHUB_ENV
-        fi
 
     - name: Commit and push changes
       if: env.needs_update == 'true'
