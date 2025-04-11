@@ -29,27 +29,17 @@ jobs:
         go get -u ./...
         go mod tidy
         git diff
-    - name: Stash changes (if needed)
-      run: |
-        git stash || echo "No changes to stash"
-
-    - name: Checkout or create branch
-      run: |
-        git checkout -B dependency-update
-
-    - name: Apply stashed changes (if needed)
-      run: |
-        git stash pop || echo "No stashed changes to apply"  
         
     - name: Commit and push changes
-      uses: stefanzweifel/git-auto-commit-action@v5.1.0
-      with:
-        commit_message: "chore: update dependencies"
-        file_pattern: |
-          go.mod
-          go.sum
-        branch: dependency-update # شاخه‌ای که تغییرات به آن push می‌شود
-        commit_author: "github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
+      id: auto-commit
+      run: |
+        git checkout -B dependency-update
+        git add go.mod go.sum
+        git commit -m "chore: update dependencies" || echo "No changes to commit"
+        git pull origin dependency-update --rebase || echo "No remote changes to pull"
+        git push origin dependency-update --force
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Trigger build
       if: env.needs_update == 'true' && steps.auto-commit-action.outputs.changes_detected == 'true'
