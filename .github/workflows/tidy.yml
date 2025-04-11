@@ -24,7 +24,8 @@ jobs:
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-    - name: Update dependencies
+    - name: Update and commit changes
+      if: env.needs_update == 'true'
       run: |
         go get -u ./...
         go mod tidy
@@ -42,14 +43,12 @@ jobs:
         fi
 
     - name: Commit and push changes
-      if: env.needs_commit == 'true'
-      run: |
-        git checkout -B dependency-update
-        git add go.mod go.sum
-        git commit -m "chore: update dependencies"
-        git push origin dependency-update --force
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      id: auto-commit-action
+      if: env.needs_update == 'true'
+      uses: stefanzweifel/git-auto-commit-action@v5.1.0
+      with:
+        commit_message: Updating dependencies to ${{ env.LATEST_TAG_NAME }} ${{ env.LATEST_TAG_SHA }}
+        tagging_message: ${{ env.LATEST_TAG_NAME }}
 
     - name: Trigger build
       if: env.needs_update == 'true' && steps.auto-commit-action.outputs.changes_detected == 'true'
