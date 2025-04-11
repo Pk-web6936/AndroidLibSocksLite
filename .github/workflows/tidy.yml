@@ -31,14 +31,14 @@ jobs:
         git diff
          
     - name: Commit and push changes
-      id: auto-commit-action
-      if: env.needs_update == 'true'
       uses: stefanzweifel/git-auto-commit-action@v5.1.0
       with:
-        commit_message: "Updating xray-core to ${{ env.LATEST_TAG_NAME }} ${{ env.LATEST_TAG_SHA }}"
+        commit_message: "chore: update dependencies"
         file_pattern: |
           go.mod
           go.sum
+        branch: dependency-update # شاخه‌ای که تغییرات به آن push می‌شود
+        commit_author: "github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
 
     - name: Trigger build
       if: env.needs_update == 'true' && steps.auto-commit-action.outputs.changes_detected == 'true'
