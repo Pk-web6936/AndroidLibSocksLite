@@ -19,20 +19,37 @@ jobs:
       with:
         go-version: 'stable'
 
-    - name: Update and commit changes
-      if: env.needs_update == 'true'
+    - name: Set up Git
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+    - name: Update dependencies
       run: |
         go get -u ./...
         go mod tidy
         git diff
+        
+    - name: Check for changes
+      id: check_changes
+      run: |
+        if git diff --quiet; then
+          echo "No changes to commit"
+          echo "needs_commit=false" >> $GITHUB_ENV
+        else
+          echo "Changes detected"
+          echo "needs_commit=true" >> $GITHUB_ENV
+        fi
 
     - name: Commit and push changes
-      id: auto-commit-action
-      if: env.needs_update == 'true'
-      uses: stefanzweifel/git-auto-commit-action@v5.1.0
-      with:
-        commit_message: Updating dependencies to ${{ env.LATEST_TAG_NAME }} ${{ env.LATEST_TAG_SHA }}
-        tagging_message: ${{ env.LATEST_TAG_NAME }}
+      if: env.needs_commit == 'true'
+      run: |
+        git checkout -B dependency-update
+        git add go.mod go.sum
+        git commit -m "chore: update dependencies"
+        git push origin master --force
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Trigger build
       if: env.needs_update == 'true' && steps.auto-commit-action.outputs.changes_detected == 'true'
