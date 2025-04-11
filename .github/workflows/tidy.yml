@@ -30,13 +30,23 @@ jobs:
         go mod tidy
         git diff
         
+    - name: Check for changes
+      id: check_changes
+      run: |
+        if git diff --quiet; then
+          echo "No changes to commit"
+          echo "needs_commit=false" >> $GITHUB_ENV
+        else
+          echo "Changes detected"
+          echo "needs_commit=true" >> $GITHUB_ENV
+        fi
+
     - name: Commit and push changes
-      id: auto-commit
+      if: env.needs_commit == 'true'
       run: |
         git checkout -B dependency-update
         git add go.mod go.sum
-        git commit -m "chore: update dependencies" || echo "No changes to commit"
-        git pull origin dependency-update --rebase || echo "No remote changes to pull"
+        git commit -m "chore: update dependencies"
         git push origin dependency-update --force
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
