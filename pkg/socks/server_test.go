@@ -3,11 +3,12 @@ package socks
 import (
 	"testing"
 	"net"
+	"syscall"
 )
 
 func TestStartSocksServers(t *testing.T) {
 	// Test starting servers with valid JSON data
-	jsonData := `[{"username": "test", "password": "test", "port": 8081}]`
+	jsonData := `[{"username": "test", "password": "test", "port": 8080}]`
 	if err := StartSocksServers("localhost", jsonData); err != nil {
 		t.Errorf("Expected no error, got %v", err)
 	}
@@ -31,6 +32,15 @@ func TestStartServer(t *testing.T) {
 
 	// Get the port number
 	port := listener.Addr().(*net.TCPAddr).Port
+
+	// Set SO_REUSEADDR (not necessary in Go, but for demonstration)
+	file, err := listener.File()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer file.Close()
+
+	syscall.SetsockoptInt(int(file.Fd()), syscall.SOL_SOCKET, syscall.SO_REUSEADDR, 1)
 
 	user := User{Username: "test", Password: "test", Port: port}
 	if err := startServer("localhost", user); err != nil {
