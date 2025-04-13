@@ -56,6 +56,7 @@ func StartSocksServers(host string, jsonData string) error {
 	for _, user := range users {
 		if err := startServer(host, user); err != nil {
 			logging.LogError(fmt.Sprintf("Failed to start server for user %s: %v", user.Username, err))
+			// Consider rolling back changes if some servers fail to start
 		}
 	}
 
@@ -122,7 +123,9 @@ func Shutdown() error {
 	mutex.Lock()
 	defer mutex.Unlock()
 	for port, listener := range listeners {
-		listener.Close()
+		if err := listener.Close(); err != nil {
+			logging.LogError(fmt.Sprintf("Error closing listener on port %d: %v", port, err))
+		}
 		delete(servers, port)
 		delete(listeners, port)
 	}
