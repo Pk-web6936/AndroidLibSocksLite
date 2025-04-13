@@ -32,7 +32,14 @@ var (
 	mutex           sync.RWMutex
 )
 
-// StartSocksServers initializes multiple SOCKS5 servers
+// StartSocksServers initializes multiple SOCKS5 servers based on JSON data.
+// 
+// Parameters:
+//   host: The host address for the servers.
+//   jsonData: JSON string containing user credentials and ports.
+// 
+// Returns:
+//   An error if the core is already running or if there's an issue parsing JSON data.
 func StartSocksServers(host string, jsonData string) error {
 	mutex.Lock()
 	defer mutex.Unlock()
@@ -56,7 +63,6 @@ func StartSocksServers(host string, jsonData string) error {
 	for _, user := range users {
 		if err := startServer(host, user); err != nil {
 			logging.LogError(fmt.Sprintf("Failed to start server for user %s: %v", user.Username, err))
-			// Consider rolling back changes if some servers fail to start
 		}
 	}
 
@@ -69,6 +75,14 @@ func StartSocksServers(host string, jsonData string) error {
 	return nil
 }
 
+// startServer creates a new SOCKS5 server with user authentication and starts listening on a specified port.
+// 
+// Parameters:
+//   host: The host address for the server.
+//   user: The user credentials and port.
+// 
+// Returns:
+//   An error if there's an issue creating the server or listener.
 func startServer(host string, user User) error {
 	credMap := socks5.StaticCredentials{user.Username: user.Password}
 	auth := socks5.UserPassAuthenticator{Credentials: credMap}
@@ -76,12 +90,14 @@ func startServer(host string, user User) error {
 
 	server, err := socks5.New(conf)
 	if err != nil {
+		logging.LogError(fmt.Sprintf("Error creating SOCKS5 server: %v", err))
 		return fmt.Errorf("error creating SOCKS5 server: %v", err)
 	}
 
 	addr := fmt.Sprintf("%s:%d", host, user.Port)
 	listener, err := net.Listen("tcp", addr)
 	if err != nil {
+		logging.LogError(fmt.Sprintf("Error creating listener: %v", err))
 		return fmt.Errorf("error creating listener: %v", err)
 	}
 
@@ -95,6 +111,12 @@ func startServer(host string, user User) error {
 	return nil
 }
 
+// acceptConnections accepts incoming connections and serves them using the SOCKS5 server.
+// 
+// Parameters:
+//   server: The SOCKS5 server instance.
+//   listener: The network listener.
+//   username: The username associated with the connection.
 func acceptConnections(server *socks5.Server, listener net.Listener, username string) {
 	for {
 		conn, err := listener.Accept()
@@ -104,10 +126,20 @@ func acceptConnections(server *socks5.Server, listener net.Listener, username st
 		}
 
 		wrappedConn := &loggingConn{Conn: conn, username: username}
-		go server.ServeConn(wrappedConn)
+		go func() {
+			defer func() {
+				if err := wrappedConn.Close(); err != nil {
+					logging.LogError(fmt.Sprintf("Error closing connection: %v", err))
+				}
+			}()
+			if err := server.ServeConn(wrappedConn); err != nil {
+				logging.LogError(fmt.Sprintf("Error serving connection: %v", err))
+			}
+		}()
 	}
 }
 
+// handleShutdown listens for shutdown signals and calls the Shutdown function.
 func handleShutdown() {
 	shutdownChan := make(chan os.Signal, 1)
 	signal.Notify(shutdownChan, os.Interrupt, syscall.SIGTERM)
@@ -119,6 +151,9 @@ func handleShutdown() {
 }
 
 // Shutdown gracefully shuts down all SOCKS5 servers.
+// 
+// Returns:
+//   An error if there's an issue closing any of the listeners.
 func Shutdown() error {
 	mutex.Lock()
 	defer mutex.Unlock()
