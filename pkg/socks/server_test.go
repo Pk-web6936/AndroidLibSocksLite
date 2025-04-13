@@ -1,7 +1,7 @@
 package socks
 
 import (
-	"testing"
+        "testing"
 )
 
 func TestStartSocksServers(t *testing.T) {
