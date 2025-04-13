@@ -18,6 +18,7 @@ func LogError(message string) {
 func logMessage(level logrus.Level, message string) {
 	logrus.WithFields(logrus.Fields{
 		"level": level.String(),
+		"file":  "example.go", // مثال اضافه کردن نام فایل
 	}).Log(level, message)
 }
 
@@ -26,4 +27,11 @@ func init() {
 	logrus.SetFormatter(&logrus.JSONFormatter{})
 	// Set log level to info as default
 	logrus.SetLevel(logrus.InfoLevel)
+	
+	// مثال استفاده از hook برای لاگ به فایل
+	// file, err := os.OpenFile("logs.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	// if err != nil {
+	// 	logrus.Fatal(err)
+	// }
+	// logrus.SetOutput(file)
 }
