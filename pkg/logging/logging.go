@@ -2,6 +2,7 @@ package logging
 
 import (
 	"github.com/sirupsen/logrus"
+	"os"
 )
 
 // LogInfo logs informational messages with an [INFO] prefix.
@@ -18,7 +19,7 @@ func LogError(message string) {
 func logMessage(level logrus.Level, message string) {
 	logrus.WithFields(logrus.Fields{
 		"level": level.String(),
-		"file":  "example.go", // مثال اضافه کردن نام فایل
+		"file":  "example.go", // Example: Adding the file name
 	}).Log(level, message)
 }
 
@@ -28,10 +29,10 @@ func init() {
 	// Set log level to info as default
 	logrus.SetLevel(logrus.InfoLevel)
 	
-	// مثال استفاده از hook برای لاگ به فایل
-	// file, err := os.OpenFile("logs.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
-	// if err != nil {
-	// 	logrus.Fatal(err)
-	// }
-	// logrus.SetOutput(file)
+	// Example: Using a hook to log to a file
+	file, err := os.OpenFile("logs.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	if err != nil {
+		logrus.Fatal(err)
+	}
+	logrus.SetOutput(file)
 }
