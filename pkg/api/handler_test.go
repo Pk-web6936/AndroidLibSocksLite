@@ -1,7 +1,6 @@
 package api
 
 import (
-	"AndroidLibSocksLite/pkg/socks"
 	"net/http"
 	"net/http/httptest"
 	"testing"
