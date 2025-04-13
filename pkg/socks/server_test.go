@@ -1,3 +1,9 @@
+package socks
+
+import (
+	"testing"
+)
+
 func TestStartSocksServers(t *testing.T) {
 	// Test starting servers with valid JSON data
 	jsonData := `[{"username": "test", "password": "test", "port": 8080}]`
