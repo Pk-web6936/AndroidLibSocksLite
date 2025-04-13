@@ -2,6 +2,7 @@ package socks
 
 import (
 	"testing"
+	"net"
 )
 
 func TestStartSocksServers(t *testing.T) {
@@ -21,8 +22,17 @@ func TestStartSocksServersInvalidJSON(t *testing.T) {
 }
 
 func TestStartServer(t *testing.T) {
-	// Test starting a server with valid data
-	user := User{Username: "test", Password: "test", Port: 8080}
+	// Generate a random port
+	listener, err := net.Listen("tcp", ":0")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer listener.Close()
+
+	// Get the port number
+	port := listener.Addr().(*net.TCPAddr).Port
+
+	user := User{Username: "test", Password: "test", Port: port}
 	if err := startServer("localhost", user); err != nil {
 		t.Errorf("Expected no error, got %v", err)
 	}
