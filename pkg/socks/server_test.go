@@ -2,8 +2,8 @@ package socks
 
 import (
 	"testing"
-    "net"
-    "syscall"
+        "net"
+        "syscall"
 )
 
 func TestStartSocksServers(t *testing.T) {
