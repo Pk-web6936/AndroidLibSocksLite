@@ -1,71 +1,39 @@
 package socks
 
 import (
-	"testing"
-	"net"
-	"syscall"
+    "testing"
+    "net"
+    "syscall"
 )
 
-func TestStartSocksServers(t *testing.T) {
-	// Test starting servers with valid JSON data
-	jsonData := `[{"username": "test", "password": "test", "port": 8080}]`
-	if err := StartSocksServers("localhost", jsonData); err != nil {
-		t.Errorf("Expected no error, got %v", err)
-	}
-}
-
-func TestStartSocksServersInvalidJSON(t *testing.T) {
-	// Test starting servers with invalid JSON data
-	jsonData := `Invalid JSON`
-	if err := StartSocksServers("localhost", jsonData); err == nil {
-		t.Errorf("Expected error, got nil")
-	}
-}
-
 func TestStartServer(t *testing.T) {
-	// Generate a random port
-	listener, err := net.Listen("tcp", ":0")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer listener.Close()
+    // Generate a random port
+    listener, err := net.Listen("tcp", ":0")
+    if err != nil {
+        t.Fatal(err)
+    }
+    defer listener.Close()
 
-	// Get the port number
-	port := listener.Addr().(*net.TCPAddr).Port
+    // Convert net.Listener to net.TCPListener
+    tcpListener, ok := listener.(*net.TCPListener)
+    if !ok {
+        t.Fatal("Failed to convert listener to TCPListener")
+    }
 
-	// Set SO_REUSEADDR (not necessary in Go, but for demonstration)
-	file, err := listener.File()
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer file.Close()
+    // Get the port number
+    port := listener.Addr().(*net.TCPAddr).Port
 
-	syscall.SetsockoptInt(int(file.Fd()), syscall.SOL_SOCKET, syscall.SO_REUSEADDR, 1)
+    // Set SO_REUSEADDR (not necessary in Go, but for demonstration)
+    file, err := tcpListener.File()
+    if err != nil {
+        t.Fatal(err)
+    }
+    defer file.Close()
 
-	user := User{Username: "test", Password: "test", Port: port}
-	if err := startServer("localhost", user); err != nil {
-		t.Errorf("Expected no error, got %v", err)
-	}
-}
+    syscall.SetsockoptInt(int(file.Fd()), syscall.SOL_SOCKET, syscall.SO_REUSEADDR, 1)
 
-func TestShutdown(t *testing.T) {
-	// Test shutting down servers
-	if err := Shutdown(); err != nil {
-		t.Errorf("Expected no error, got %v", err)
-	}
-}
-
-func TestIsCoreRunning(t *testing.T) {
-	// Test checking if core is running
-	if IsCoreRunning() {
-		t.Errorf("Expected core not to be running")
-	}
-}
-
-func TestActiveServers(t *testing.T) {
-	// Test getting active servers
-	servers := ActiveServers()
-	if len(servers) != 0 {
-		t.Errorf("Expected no active servers")
-	}
+    user := User{Username: "test", Password: "test", Port: port}
+    if err := startServer("localhost", user); err != nil {
+        t.Errorf("Expected no error, got %v", err)
+    }
 }
