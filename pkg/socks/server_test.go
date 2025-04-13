@@ -7,7 +7,7 @@ import (
 
 func TestStartSocksServers(t *testing.T) {
 	// Test starting servers with valid JSON data
-	jsonData := `[{"username": "test", "password": "test", "port": 8080}]`
+	jsonData := `[{"username": "test", "password": "test", "port": 8081}]`
 	if err := StartSocksServers("localhost", jsonData); err != nil {
 		t.Errorf("Expected no error, got %v", err)
 	}
