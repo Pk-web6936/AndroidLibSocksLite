@@ -1,0 +1,23 @@
+name: Test
+
+on:
+  push:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  test:
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+    steps:
+      - name: Checkout codebase
+        uses: actions/checkout@v4.2.2
+      - name: Set up Go
+        uses: actions/setup-go@v5.4.0
+        with:
+          go-version-file: go.mod
+          check-latest: true
+      - name: Test
+        run: go test -timeout 1h -v ./...
