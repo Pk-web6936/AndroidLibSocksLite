@@ -9,8 +9,11 @@ jobs:
   test:
     permissions:
       contents: read
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
     steps:
       - name: Checkout codebase
         uses: actions/checkout@v4.2.2
