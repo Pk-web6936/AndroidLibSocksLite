@@ -22,13 +22,8 @@ jobs:
         uses: actions/setup-go@v5.4.0
         with:
           go-version-file: go.mod
+          cache: true
           check-latest: true
-          
-      - name: Cache Go Modules
-        uses: actions/cache@v4.2.3
-        with:
-          path: ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
 
       - run: go test -race -coverprofile=coverage.txt -covermode=atomic ./...
 
