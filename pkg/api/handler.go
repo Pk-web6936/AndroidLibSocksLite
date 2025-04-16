@@ -5,6 +5,7 @@ import (
 	"AndroidLibSocksLite/pkg/socks"
 	"encoding/json"
 	"net/http"
+	"time" // <-- Add this import
 )
 
 // StartHTTPServer initializes and starts the HTTP server on the specified host.
@@ -12,8 +13,15 @@ func StartHTTPServer(host string) {
 	http.HandleFunc("/getClientStatus", getClientStatus)
 	http.HandleFunc("/shutdown", shutdownServers)
 
+	server := &http.Server{ // <-- Key change here
+		Addr:         host + ":8080",
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 10 * time.Second,
+		IdleTimeout:  15 * time.Second,
+	}
+
 	logging.LogInfo("Starting HTTP server on " + host + ":8080")
-	if err := http.ListenAndServe(host+":8080", nil); err != nil {
+	if err := server.ListenAndServe(); err != nil { // <-- Modified line
 		logging.LogError("Failed to start HTTP server: " + err.Error())
 	}
 }
