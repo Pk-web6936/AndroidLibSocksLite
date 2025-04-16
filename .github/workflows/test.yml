@@ -26,17 +26,16 @@ jobs:
           check-latest: true
 
       - name: Cleanup old coverage files
+        shell: bash
         run: |
-          if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
-            if exist coverage.txt (del coverage.txt) || true
-          else
-            rm -f coverage.txt || true
-          fi
+          rm -f coverage.txt || true  # برای همه سیستم‌عامل‌ها
 
       - name: Install dependencies
+        shell: bash
         run: go mod tidy
 
       - name: Run Tests
+        shell: bash
         run: go test -race -coverprofile=coverage.txt -covermode=atomic ./...
 
       - name: Upload Coverage
@@ -52,6 +51,5 @@ jobs:
           go install github.com/securego/gosec/v2/cmd/gosec@latest
           export PATH="$PATH:$(go env GOPATH)/bin"
           gosec ./...
-         
       - name: Test
         run: go test -timeout 1h -v ./...
