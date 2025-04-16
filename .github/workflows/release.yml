@@ -60,3 +60,11 @@ jobs:
           name: libsocks
           path: |
             ${{ github.workspace }}/pkg/socks/libsocks*
+
+      - name: Upload AndroidLibSocksLite to release
+        if: github.event.inputs.release_tag != ''
+        uses: svenstaro/upload-release-action@2.9.0
+        with:
+           file: pkg/socks/libsocks*r
+           tag: ${{ github.event.inputs.release_tag }}
+           file_glob: true
