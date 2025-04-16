@@ -17,10 +17,33 @@ jobs:
     steps:
       - name: Checkout codebase
         uses: actions/checkout@v4.2.2
+        
       - name: Set up Go
         uses: actions/setup-go@v5.4.0
         with:
           go-version-file: go.mod
           check-latest: true
+          
+      - name: Cache Go Modules
+        uses: actions/cache@v4.2.3
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+
+      - run: go test -race -coverprofile=coverage.txt -covermode=atomic ./...
+
+      - name: Upload Coverage
+        uses: codecov/codecov-action@v5.4.2
+        if: success()
+
+  security:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - run: |
+          go install github.com/securego/gosec/v2/cmd/gosec@latest
+          gosec ./...
+         
       - name: Test
         run: go test -timeout 1h -v ./...
