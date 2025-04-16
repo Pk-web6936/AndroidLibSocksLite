@@ -1,7 +1,4 @@
-name: Build
-
-on:
-  name: Build and Release
+name: Build and Release
 
 on:
   workflow_dispatch:
