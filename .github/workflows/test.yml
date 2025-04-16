@@ -25,7 +25,19 @@ jobs:
           cache: true
           check-latest: true
 
-      - run: go test -race -coverprofile=coverage.txt -covermode=atomic ./...
+      - name: Cleanup old coverage files
+        run: |
+          if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+            if exist coverage.txt (del coverage.txt) || true
+          else
+            rm -f coverage.txt || true
+          fi
+
+      - name: Install dependencies
+        run: go mod tidy
+
+      - name: Run Tests
+        run: go test -race -coverprofile=coverage.txt -covermode=atomic ./...
 
       - name: Upload Coverage
         uses: codecov/codecov-action@v5.4.2
