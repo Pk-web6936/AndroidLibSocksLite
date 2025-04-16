@@ -1,18 +1,15 @@
 name: Build
 
 on:
+  name: Build and Release
+
+on:
   workflow_dispatch:
-    inputs:
-      release_tag:
-        required: true
-        type: string
-        description : 'Release tag'
-  pull_request:
-    branches:
-      - master
+  release:
+    types: [published]
   push:
-    branches:
-      - master
+  pull_request:
+    types: [opened, synchronize, reopened]
 jobs:
   build:
     runs-on: ubuntu-latest
