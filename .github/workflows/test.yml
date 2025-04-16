@@ -28,7 +28,7 @@ jobs:
       - name: Cleanup old coverage files
         shell: bash
         run: |
-          rm -f coverage.txt || true  # برای همه سیستم‌عامل‌ها
+          rm -f coverage.txt || true  # For all operating systems
 
       - name: Install dependencies
         shell: bash
