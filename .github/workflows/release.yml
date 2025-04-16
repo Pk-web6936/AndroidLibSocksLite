@@ -63,7 +63,7 @@ jobs:
 
       - name: Upload AndroidLibSocksLite to release
         if: github.event.inputs.release_tag != ''
-        uses: svenstaro/upload-release-action@v2.9.0
+        uses: svenstaro/upload-release-action@v2
         with:
            file: pkg/socks/libsocks*r
            tag: ${{ github.event.inputs.release_tag }}
