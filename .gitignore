@@ -1,0 +1,15 @@
+# Default ignored files for Android projects
+*.iml
+.gradle
+/local.properties
+/.idea/
+/build
+/captures
+.externalNativeBuild
+
+# Default ignored files from .idea/.gitignore
+/shelf/
+/workspace.xml
+/httpRequests/
+/dataSources/
+/dataSources.local.xml

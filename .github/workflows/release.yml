@@ -1,0 +1,71 @@
+name: Build and Release
+
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
+  push:
+  pull_request:
+    types: [opened, synchronize, reopened]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v4.2.2
+
+
+      - name: Setup Golang
+        uses: actions/setup-go@v5.4.0
+        with:
+          go-version-file: 'go.mod'
+
+      - name: Setup Go Mobile
+        run: |
+          go install golang.org/x/mobile/cmd/gomobile@latest
+          export PATH=$PATH:~/go/bin
+
+      - name: Setup JDK
+        uses: actions/setup-java@v4.7.1
+        with:
+          java-version: 21
+          distribution: 'temurin'
+
+      - name: Setup Android SDK Tools
+        uses: android-actions/setup-android@v3.2.2
+        with:
+          log-accepted-android-sdk-licenses: false
+          cmdline-tools-version: '12266719'
+          packages: 'platforms;android-35 build-tools;35.0.0 platform-tools'
+
+      - name: Install NDK
+        run: |
+          echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager \
+            --channel=3 \
+            --install "ndk;29.0.13113456"
+          echo "NDK_HOME=$ANDROID_HOME/ndk/29.0.13113456" >> $GITHUB_ENV
+
+      - name: Build
+        run: |
+          gomobile init
+          go mod tidy
+          cd pkg/socks
+          go get golang.org/x/mobile/bind
+          gomobile bind -v -androidapi 21 -ldflags='-s -w' -o libsocks.aar ./
+      
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4.6.2
+        with:
+          name: libsocks
+          path: |
+            ${{ github.workspace }}/pkg/socks/libsocks*
+
+      - name: Upload AndroidLibSocksLite to release
+        if: github.event_name == 'release'
+        uses: svenstaro/upload-release-action@2.9.0
+        with:
+           repo_token: ${{ secrets.GITHUB_TOKEN }}
+           file: pkg/socks/libsocks*r
+           tag: ${{ github.ref }}
+           file_glob: true
