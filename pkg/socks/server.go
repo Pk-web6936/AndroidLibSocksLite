@@ -4,7 +4,7 @@ import (
 	"AndroidLibSocksLite/pkg/logging"
 	"encoding/json"
 	"fmt"
-	"github.com/armon/go-socks5"
+	"github.com/Pk-web6936/go-socks5"
 	"net"
 	"os"
 	"os/signal"
