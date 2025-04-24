@@ -4,12 +4,13 @@ import (
 	"AndroidLibSocksLite/pkg/logging"
 	"encoding/json"
 	"fmt"
-	"github.com/Pk-web6936/go-socks5"
 	"net"
 	"os"
 	"os/signal"
 	"sync"
 	"syscall"
+
+	"github.com/Pk-web6936/go-socks5"
 )
 
 const coreVersion = "1.0.1"
@@ -33,13 +34,15 @@ var (
 )
 
 // StartSocksServers initializes multiple SOCKS5 servers based on JSON data.
-// 
+//
 // Parameters:
-//   host: The host address for the servers.
-//   jsonData: JSON string containing user credentials and ports.
-// 
+//
+//	host: The host address for the servers.
+//	jsonData: JSON string containing user credentials and ports.
+//
 // Returns:
-//   An error if the core is already running or if there's an issue parsing JSON data.
+//
+//	An error if the core is already running or if there's an issue parsing JSON data.
 func StartSocksServers(host string, jsonData string) error {
 	mutex.Lock()
 	defer mutex.Unlock()
@@ -76,13 +79,15 @@ func StartSocksServers(host string, jsonData string) error {
 }
 
 // startServer creates a new SOCKS5 server with user authentication and starts listening on a specified port.
-// 
+//
 // Parameters:
-//   host: The host address for the server.
-//   user: The user credentials and port.
-// 
+//
+//	host: The host address for the server.
+//	user: The user credentials and port.
+//
 // Returns:
-//   An error if there's an issue creating the server or listener.
+//
+//	An error if there's an issue creating the server or listener.
 func startServer(host string, user User) error {
 	credMap := socks5.StaticCredentials{user.Username: user.Password}
 	auth := socks5.UserPassAuthenticator{Credentials: credMap}
@@ -112,11 +117,12 @@ func startServer(host string, user User) error {
 }
 
 // acceptConnections accepts incoming connections and serves them using the SOCKS5 server.
-// 
+//
 // Parameters:
-//   server: The SOCKS5 server instance.
-//   listener: The network listener.
-//   username: The username associated with the connection.
+//
+//	server: The SOCKS5 server instance.
+//	listener: The network listener.
+//	username: The username associated with the connection.
 func acceptConnections(server *socks5.Server, listener net.Listener, username string) {
 	for {
 		conn, err := listener.Accept()
@@ -151,9 +157,10 @@ func handleShutdown() {
 }
 
 // Shutdown gracefully shuts down all SOCKS5 servers.
-// 
+//
 // Returns:
-//   An error if there's an issue closing any of the listeners.
+//
+//	An error if there's an issue closing any of the listeners.
 func Shutdown() error {
 	mutex.Lock()
 	defer mutex.Unlock()

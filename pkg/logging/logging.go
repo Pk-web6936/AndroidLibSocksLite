@@ -1,8 +1,9 @@
 package logging
 
 import (
-	"github.com/sirupsen/logrus"
 	"os"
+
+	"github.com/sirupsen/logrus"
 )
 
 // LogInfo logs informational messages with an [INFO] prefix.
@@ -28,7 +29,7 @@ func init() {
 	logrus.SetFormatter(&logrus.JSONFormatter{})
 	// Set default log level
 	logrus.SetLevel(logrus.InfoLevel)
-	
+
 	// File logging hook
 	file, err := os.OpenFile("logs.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0600) // <-- Changed from 0666 to 0600
 	if err != nil {
