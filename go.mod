@@ -1,6 +1,6 @@
 module AndroidLibSocksLite
 
-go 1.24.2
+go 1.24.3
 
 require (
 	github.com/Pk-web6936/go-socks5 v1.0.0
