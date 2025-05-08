@@ -25,7 +25,7 @@ jobs:
 
     - name: Update dependencies
       run: |
-        go get -u ./...
+        go get -u
         go mod tidy
         git diff
 
